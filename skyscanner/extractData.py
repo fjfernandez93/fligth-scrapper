@@ -13,21 +13,23 @@ url_base = "https://www.skyscanner.es/transporte/vuelos/{}/{}/?adults={}&childre
 dultsv2={}&childrenv2&infants=0&cabinclass=economy&rtn=0&preferdirects=false\
 &outboundaltsenabled=false&inboundaltsenabled=false&oym={}&ref=home&selectedoday=01"
 
-def storeInfoJourney(ori,dest,adults,year,month,price,day):
+
+def storeInfoJourney(ori,dest,adults,year,month,price,day,now):
 
     client = MongoClient()
     collection = client.skyscanner.journey
     data = {
         "ori" : ori,
         "dest" : dest,
-        "timestamp" : time.time(),
         "month" : month,
         "year" : year,
         "day": day,
-        "price": price
+        "price": price,
+        "queryDate": now
     }
     collection.insert_one(data).inserted_id
     client.close()
+
 
 def getAndStoreInfoFromWeb(airport1, airport2, num_adults, year, month):
 
@@ -65,10 +67,10 @@ def getAndStoreInfoFromWeb(airport1, airport2, num_adults, year, month):
                 prices.append(-1)
 
     #### STORE INFO ####
-
+    now = time.time()
     for i in range(1,len(prices)+1):
-        #storeInfoJourney(airport1,airport2,num_adults,year,month,prices[i-1],i) 
-        print(prices[i])
+        storeInfoJourney(airport1,airport2,num_adults,year,month,prices[i-1],i,now) 
+        #print(prices[i])
     #driver.close()
 
 

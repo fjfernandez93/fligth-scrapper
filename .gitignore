@@ -1,3 +1,6 @@
 .vscode
 scrappingEnv/
 .DS_Store
+**/__pycache__/
+skyscanner/playground.py
+**/.idea/
