@@ -4,3 +4,4 @@ scrappingEnv/
 **/__pycache__/
 skyscanner/playground.py
 **/.idea/
+skyscanner/geckodriver.log
