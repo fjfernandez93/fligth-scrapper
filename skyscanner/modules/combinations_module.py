@@ -1,4 +1,5 @@
 from model.skyscanner_dao import SkyscannerDAO
+import model.skyscanner_trip
 import datetime
 
 dao = SkyscannerDAO()
@@ -37,6 +38,8 @@ def filter_combinations(combinations, mode):
         [filtered_combinations.append(x) for x in combinations if x["to"][1] == x["from"][0]]
     elif mode == 3:
         [filtered_combinations.append(x) for x in combinations if x["to"][0] == x["from"][1] and x["to"][1] == x["from"][0]  ]
+    else:
+        filtered_combinations = combinations
     return filtered_combinations
 
 
@@ -56,3 +59,20 @@ def get_day_ranges(first, last, length):
         days_list.append(range_days)
         current = current + delta_time_one
     return days_list
+
+
+def get_trip_list(sky_query):
+
+    airport_combis = generate_combinations(sky_query.ori, sky_query.dest)
+    airport_combis = filter_combinations(airport_combis, sky_query.filter_mode)
+
+    day_ranges = get_day_ranges(sky_query.first_day, sky_query.last_day, sky_query.length)
+
+    result = list()
+    for combi in airport_combis:
+        for rang in day_ranges:
+            trip_obj = model.skyscanner_trip.SkyscannerTrip(combi["to"], combi["from"], rang[0], rang[-1])
+            trip_obj.set_price()
+            result.append(trip_obj)
+
+    return result

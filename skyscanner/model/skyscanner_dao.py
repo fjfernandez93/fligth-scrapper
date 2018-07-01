@@ -33,3 +33,8 @@ class SkyscannerDAO:
             print("Entry not found!!")
         return price
 
+    def get_combination_price(self, combination, day_range):
+
+        first_day = day_range[0]
+        return True
+        # tiene que devolver un mapeo del precio de cada dia para esa combinacion
