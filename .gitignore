@@ -1,7 +1,11 @@
 .vscode
 scrappingEnv/
+skyscanner/envFlight/
+skyscanner/envPython/
 .DS_Store
 **/__pycache__/
 skyscanner/playground.py
 **/.idea/
 skyscanner/geckodriver.log
+**/__init__.pyc
+**/*.log

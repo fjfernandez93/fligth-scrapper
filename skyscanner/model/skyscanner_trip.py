@@ -19,8 +19,8 @@ class SkyscannerTrip:
     def set_price(self):
         dao = model.skyscanner_dao.SkyscannerDAO()
 
-        self.ori_price = dao.get_price_for_ticket(self.ori_date.day, self.ori_date.month, self.ori_date.year-2000,
+        self.ori_price = dao.get_price_for_ticket(self.ori_date.day, self.ori_date.month, self.ori_date.year,
                                                   self.ori_combi[0], self.ori_combi[1])
 
-        self.dest_price = dao.get_price_for_ticket(self.dest_date.day, self.dest_date.month, self.dest_date.year - 2000,
+        self.dest_price = dao.get_price_for_ticket(self.dest_date.day, self.dest_date.month, self.dest_date.year,
                                                    self.dest_combi[0], self.dest_combi[1])

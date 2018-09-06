@@ -11,6 +11,11 @@ class SkyscannerDAO:
         self.journey_collection = self.db.journey
 
     def get_country_airports(self, country_name):
+        """
+        Get all the airports for a given country
+        :param country_name: the country name
+        :return: a list of SkyscannerAirport objects
+        """
         result = self.collection.find({"country": country_name})
         out_airports = list()
         for row in result:
@@ -19,18 +24,22 @@ class SkyscannerDAO:
         return out_airports
 
     def get_price_for_ticket(self, day, month, year, ori, dest):
-        result = self.journey_collection.find_one({
+        result = self.journey_collection.find({
             "ori": ori,
             "dest": dest,
             "month": month,
             "day": day,
             "year": year
         })
-        price = -1
         if result is not None:
-            price = result["price"]
+            price = 9999999
+            for res in result:
+                if res["price"] < price:
+                    price = res["price"]
         else:
             print("Entry not found!!")
+        if price == 9999999:
+            price = 0
         return price
 
     def get_combination_price(self, combination, day_range):
