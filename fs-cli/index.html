@@ -1,0 +1,226 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css" integrity="sha384-WskhaSGFgHYWDcbwN70/dfYBj47jz9qbsMId/iRN3ewGhXQFZCSftd1LZCfmhktB" crossorigin="anonymous">
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.19/css/jquery.dataTables.css">
+
+    <title>+S Traveler</title>
+  </head>
+  <body style="background-color: #cee1ff !important">
+    <!-- Image and text -->
+    <nav style="background-color: #00d0c9 !important" class="navbar navbar-light bg-light">
+        <a class="navbar-brand" href="#">
+          <img src="./img/plane.png" width="30" height="30" class="d-inline-block align-top" alt="">
+          +S Traveler
+        </a>
+      </nav>
+    <div class="container">
+
+        <div class="row">
+            
+        </div>
+        <div class="row">
+            <div class="col-md-12">
+                    <form id="skyForm" action="">
+                            <div class="form-row">
+                                <div class="form-group col-md-6">
+                                    <label for="ori">From:</label>
+                                    <input class="form-control" type="text" name="ori" id="ori" placeholder="Origin country" value="spain">
+                                </div>
+                                <div class="form-group col-md-6">
+                                    <label for="ori">To:</label>
+                                    <input class="form-control" type="text" name="dest" id="dest" placeholder="Origin country" value="poland">
+                                </div>
+                            </div>
+                            <div class="form-row">
+                                    <div class="form-group col-md-3">
+                                        <label for="first-day">From:</label>
+                                        <input class="form-control" type="date" name="first-day" id="first-day" value="2018-12-01">
+                                    </div>
+                                    <div class="form-group col-md-3">
+                                        <label for="last-day">To:</label>
+                                        <input class="form-control" type="date" name="last-day" id="last-day" value="2018-12-30">
+                                    </div>
+                                    <div class="form-group col-md-3">
+                                        <label for="num-days">Days:</label>
+                                        <input class="form-control" type="number" name="num-days" id="num-days" min="0" value="3">
+                                    </div>
+                                    <div class="form-group col-md-3">
+                                        <label for="filter">Filter:</label><br>
+                                        <select name="filter" id="filter">
+                                                <option value="0">No filter</option>
+                                                <option value="1">Same origin airport</option>
+                                                <option value="2">Same destination airport</option>
+                                                <option value="3">Both airports the same</option>
+                                        </select>
+                                    </div>
+                            </div>
+                            <button type="submit" class="btn btn-primary" id="submitBtn">Submit</button>
+            
+                        </form>
+            </div>
+
+
+        </div>
+
+        <div class="row" style="margin-top:20px;">
+            <div class="col-md-12">
+                    <table id="combinationsTable" class="stripe" >
+                        <thead>
+                            <th>Outward trip</th>
+                            <th>Outward day</th>
+                            <th>Return trip</th>
+                            <th>Return day</th>
+                            <th>Price</th>
+                        </thead>
+                        <tbody>
+
+                        </tbody>
+                    </table>
+            </div>
+
+
+        </div>
+
+
+    </div>
+
+
+
+    <!-- Optional JavaScript -->
+    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+    <script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.min.js" integrity="sha384-smHYKdLADwkXOn1EmN1qk/HfnUcbVRZyYmZ4qpPea6sjB/pTJ0euyQp0Mk8ck+5T" crossorigin="anonymous"></script>
+    <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.10.19/js/jquery.dataTables.js"></script>
+
+    <script>
+
+
+        // $("#skyForm").on('submit', function(e){
+        //     e.preventDefault();
+        //     $.post("http://127.0.0.1:5000/testPost", $("#skyForm").serialize() ,function(data,status){
+        //         console.log(data);
+        //         //$("#resultArea").val(data);
+        //         table = $("#combinationsTable").DataTable();
+        //         table.clear();
+        //         //a = [["hola", "adios"], ["cerca", "lejos"]]
+        //         //console.log(a)
+        //         table.rows.add(jQuery.parseJSON(data)["data"])
+        //         table.draw();
+        //     })
+        // })
+
+
+        // $("#skyForm").on('submit', function(e){
+        //     e.preventDefault();
+        //     $.post("http://127.0.0.1:5000/loki", $("#skyForm").serialize() ,function(data,status){
+        //         table = $("#combinationsTable").DataTable();
+        //         table.clear();
+        //         table.rows.add(jQuery.parseJSON(data))
+        //         table.draw();
+        //     })
+        // })
+    </script>
+
+<script>
+
+    codes = {
+        "agp": "Malaga",
+        "mad": "Madrid",
+        "wmi": "Warsaw-Modlin",
+        "krk": "Krakow"
+    }
+
+    $(document).ready(function(){
+        $("#combinationsTable").DataTable({
+            columns: [
+                { data: 'trip1' },
+                { data: 'day1' },
+                { data: 'trip2' },
+                { data: 'day2' },
+                { data: 'price' }
+            ]
+        });
+    })
+
+    $.fn.serializeObject = function()
+        {
+        var o = {};
+        var a = this.serializeArray();
+        $.each(a, function() {
+            if (o[this.name]) {
+                if (!o[this.name].push) {
+                    o[this.name] = [o[this.name]];
+                }
+                o[this.name].push(this.value || '');
+            } else {
+                o[this.name] = this.value || '';
+            }
+        });
+        return o;
+        };
+
+    function getAirportConversion(code){
+        return codes[code]
+    }
+
+    function formatData(data)
+    {
+        for(var i=0; i<data.length; i++){
+            console.log(i)
+
+            //airports1 = data[i]['trip1'].match(/\('\w{3}', '\w{3}'\)/ig)
+            airports1 = data[i]['trip1'].match(/\w{3}/ig)
+            airport_1a_fil = getAirportConversion(airports1[0])
+            airport_1b_fil = getAirportConversion(airports1[1])
+            airports2 = data[i]['trip2'].match(/\w{3}/ig)
+            airport_2a_fil = getAirportConversion(airports2[0])
+            airport_2b_fil = getAirportConversion(airports2[1])
+            
+            data[i]['trip1'] = airport_1a_fil + " > " + airport_1b_fil
+            data[i]['trip2'] = airport_2a_fil + " > " + airport_2b_fil
+
+            console.log(data[i])
+            
+        }
+    }
+
+    $(document).ready(function(){
+        // click on button submit
+        $("#submitBtn").on('click', function(e){
+            e.preventDefault();
+            // send ajax
+            console.log(JSON.stringify($("#skyForm").serializeObject()))
+            $.ajax({
+                url: 'http://127.0.0.1:5000/search', // url where to submit the request
+                type : "POST", // type of action POST || GET
+                dataType : 'json', // data type
+                contentType: "application/json; charset=utf-8",
+                data : JSON.stringify($("#skyForm").serializeObject()), // post data || get data
+                success : function(result) {
+                    console.log(result);
+                    formatData(result)
+
+                    table = $("#combinationsTable").DataTable();
+                    table.clear();
+                    table.rows.add(result)
+                    table.draw();
+                },
+                error: function(xhr, resp, text) {
+                    console.log(xhr);
+                    console.log(resp);
+                    console.log(text);
+                }
+            })
+        });
+    });
+
+</script>
+  </body>
+</html>
