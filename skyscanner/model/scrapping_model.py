@@ -17,7 +17,7 @@ class SkyscannerScrapData:
 
 class RyanairScrapData:
 
-    def __init__(self,ori, dest, adults, year, month):
+    def __init__(self, ori, dest, adults, year, month):
         self.ori = ori
         self.dest = dest
         self.adults = adults

@@ -16,8 +16,8 @@ from model.scrapping_model import SkyscannerScrapData, RyanairScrapData
 
 start_api()
 
-dao = skyscanner_dao.SkyscannerDAO()
+#dao = skyscanner_dao.SkyscannerDAO()
 
-a = dao.get_price_for_ticket(10,12,2018,"mad", "wmi")
+#a = dao.get_price_for_ticket(10,12,2018,"mad", "wmi")
 
-print(a)
+#print(a)
