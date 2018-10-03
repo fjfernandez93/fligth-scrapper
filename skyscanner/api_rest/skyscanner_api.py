@@ -10,6 +10,7 @@ app = Flask(__name__)
 cors = CORS(app)
 app.config['CORS_HEADERS'] = 'Content-Type'
 
+
 @app.route('/test')
 def test():
     date1 = datetime.date(2018, 9, 1)
@@ -26,7 +27,7 @@ def test():
     return json.dump(str(msg))
 
 
-@app.route('/search',methods=["POST"])
+@app.route('/search', methods=["POST"])
 @cross_origin()
 def search():
 

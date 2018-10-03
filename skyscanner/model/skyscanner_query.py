@@ -1,4 +1,4 @@
-
+import time
 
 class SkyscannerQuery:
 
@@ -11,6 +11,7 @@ class SkyscannerQuery:
         self.filter_mode = filter_mode
         self.trip_list = list()
         self.filter_mode = filter_mode
+        self.timestamp = time.time()
 
     @property
     def trip_list_by_price(self):

@@ -1,6 +1,7 @@
+import time
 from pymongo import MongoClient
 from model.skyscanner_airport import SkyscannerAirport
-
+import datetime
 
 class SkyscannerDAO:
 
@@ -9,6 +10,7 @@ class SkyscannerDAO:
         self.db = self.client.skyscanner
         self.collection = self.db.airports
         self.journey_collection = self.db.journey
+        self.query_collection = self.db.query
 
     def get_country_airports(self, country_name):
         """
@@ -24,6 +26,7 @@ class SkyscannerDAO:
         return out_airports
 
     def get_price_for_ticket(self, day, month, year, ori, dest):
+        price = 0
         result = self.journey_collection.find({
             "ori": ori,
             "dest": dest,
@@ -42,8 +45,36 @@ class SkyscannerDAO:
             price = 0
         return price
 
-    def get_combination_price(self, combination, day_range):
+    def check_valid_query_data(self, ss_query):
+        """
+        Check if it exists valid data to answer a query
+        :param ss_query: SkyscannerQuery object with the query data
+        :return: bool
+        """
 
-        first_day = day_range[0]
-        return True
-        # tiene que devolver un mapeo del precio de cada dia para esa combinacion
+        # Limit timestamp: now minus 2 weeks (in seconds)
+        # TODO: extract it from config file
+        limit = time.time() - 1209600
+
+        result = self.query_collection.find_one({
+            "ori": ss_query.ori,
+            "dest": ss_query.dest,
+            "length": ss_query.length,
+            "first_day": datetime.datetime.combine(ss_query.first_day, datetime.time.min),
+            "last_day":  datetime.datetime.combine(ss_query.last_day, datetime.time.min),
+            "timestamp": {"$gt": limit}
+        })
+        return result is not None
+
+    def insert_query_data(self, ss_query):
+
+        self.query_collection.insert({
+            "ori": ss_query.ori,
+            "dest": ss_query.dest,
+            "length": ss_query.length,
+            "first_day": datetime.datetime.combine(ss_query.first_day, datetime.time.min),
+            "last_day": datetime.datetime.combine(ss_query.last_day, datetime.time.min),
+            "timestamp": ss_query.timestamp
+        })
+
+

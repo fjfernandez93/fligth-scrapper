@@ -14,7 +14,6 @@ class SkyscannerScrapper:
                         dultsv2={}&childrenv2&infants=0&cabinclass=economy&rtn=0&preferdirects=false\
                         &outboundaltsenabled=false&inboundaltsenabled=false&oym={}&ref=home&selectedoday=01"
 
-
     def store_info_journey(self, skyscanner_scrap_data, price, day):
         """
         Store in mongoDB the information about trip day
