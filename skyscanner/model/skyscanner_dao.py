@@ -3,6 +3,7 @@ from pymongo import MongoClient
 from model.skyscanner_airport import SkyscannerAirport
 import datetime
 
+
 class SkyscannerDAO:
 
     def __init__(self):
@@ -27,6 +28,7 @@ class SkyscannerDAO:
 
     def get_price_for_ticket(self, day, month, year, ori, dest):
         price = 0
+        site = ""
         result = self.journey_collection.find({
             "ori": ori,
             "dest": dest,
@@ -39,11 +41,12 @@ class SkyscannerDAO:
             for res in result:
                 if res["price"] < price:
                     price = res["price"]
+                    site = res["site"]
         else:
             print("Entry not found!!")
         if price == 9999999:
             price = 0
-        return price
+        return (price, site)
 
     def check_valid_query_data(self, ss_query):
         """
@@ -76,5 +79,3 @@ class SkyscannerDAO:
             "last_day": datetime.datetime.combine(ss_query.last_day, datetime.time.min),
             "timestamp": ss_query.timestamp
         })
-
-

@@ -10,7 +10,7 @@ def generate_combinations(ori, dest):
     Generate the possible combinations between airports of two given countries.
     :param ori: origin country
     :param dest: destination country
-    :return: a list with all the combinations
+    :return: a list with all the combinations, represented each one as a dict with to and from members.
     """
     airports_ori = dao.get_country_airports(ori)
     airports_dest = dao.get_country_airports(dest)
@@ -32,6 +32,21 @@ def generate_combinations(ori, dest):
             combinations.append(combi)
 
     return combinations
+
+
+def generate_airport_combinations(ori, dest):
+
+    airports_ori = dao.get_country_airports(ori)
+    airports_dest = dao.get_country_airports(dest)
+
+    ori_to_dest = list()
+    dest_to_ori = list()
+
+    for ap_o in airports_ori:
+        for ap_d in airports_dest:
+            ori_to_dest.append((ap_o.code, ap_d.code))
+            dest_to_ori.append((ap_d.code, ap_o.code))
+    return ori_to_dest + dest_to_ori
 
 
 def filter_combinations(combinations, mode):
@@ -111,7 +126,7 @@ def get_trip_list(sky_query):
     # Remove trips with ticket with -1 price (no have tickets available).
     to_remove = list()
     for res in result:
-        if res.ori_price == 0 or res.dest_price == 0:
+        if res.ori_price == 0 or res.dest_price == 0 or res.ori_price == -1 or res.dest_price == -1:
             to_remove.append(res)
     for tr in to_remove:
         result.remove(tr)

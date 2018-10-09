@@ -51,7 +51,7 @@ def search():
 def scrap():
     print(request.data)
     data = json.loads(request.data)
-    modules.api_module.scrap_site(data["site"], data["ori"], data["dest"], data["year"], data["month"])
+    modules.api_module.scrap_trip_in_site(data["site"], data["ori"], data["dest"], data["year"], data["month"])
     return "OK"
 
 

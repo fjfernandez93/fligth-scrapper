@@ -1,4 +1,8 @@
 from selenium import webdriver
+from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.support import expected_conditions as ec
+from selenium.webdriver.common.by import By
+
 from bs4 import BeautifulSoup
 import re
 from time import sleep
@@ -8,6 +12,7 @@ import time
 import datetime
 from model.scrapping_model import RyanairScrapData
 import common.tools
+from common.flags import GlobalState
 
 
 class RyanairScrapper:
@@ -35,7 +40,7 @@ class RyanairScrapper:
         collection.insert_one(data).inserted_id
         client.close()
 
-    def parse_date(self, date):
+    def parse_date(self, date, year):
         """
         Helper for parse the extracted date into a python date
         :param date: date extracted from the website
@@ -44,10 +49,10 @@ class RyanairScrapper:
         split_date = date.split(" ")
         day = split_date[1]
         month = self.months.index(split_date[2])
-        date = datetime.date(2018, int(month)+1, int(day))
+        date = datetime.date(year, int(month)+1, int(day))
         return date
 
-    def iterative_scrapper(self, driver, month):
+    def iterative_scrapper(self, driver, month, year):
         """
         Method for extract the prices that appears in a Ryanair query. It extracts more than it's visible.
 
@@ -67,7 +72,7 @@ class RyanairScrapper:
         for slide in slides:
             date = slide.find("div", {"class": "date"}).get_text()
             try:
-                date = self.parse_date(date)
+                date = self.parse_date(date, year)
                 # Avoid the days of other months.
                 if date.month == month:
                     info = slide.find("div", {"class": "fare"}).get_text().replace(u'\xa0', ' ').split(" ")
@@ -99,13 +104,15 @@ class RyanairScrapper:
         sleep(10)
 
         # Do the first scrap
-        self.iterative_scrapper(driver, ryanair_scrap_data.month)
+        self.iterative_scrapper(driver, ryanair_scrap_data.month, ryanair_scrap_data.year)
         for i in range(0, 6):
             # Find and press the button to show the next 5 days, scrap them and repeat
-            button = driver.find_element_by_xpath("//button[@class='arrow left']")
+            wait = WebDriverWait(driver, 10)
+            button = wait.until(ec.visibility_of_element_located((By.XPATH, "//button[@class='arrow left']")))
+            # button = driver.find_element_by_xpath("//button[@class='arrow left']")
             button.click()
             sleep(10)
-            self.iterative_scrapper(driver, ryanair_scrap_data.month)
+            self.iterative_scrapper(driver, ryanair_scrap_data.month, ryanair_scrap_data.year)
 
         # Store the results after order them
         for k in sorted(self.result.keys()):
@@ -114,6 +121,12 @@ class RyanairScrapper:
         # Close the browser
         driver.close()
         self.result.clear()
+        GlobalState.finished_scrapper()
+
+    def start_scrapping(self, ryanair_scrap_data):
+        while not GlobalState.can_start_scrapper():
+            sleep(1)
+        self.do_scrapping(ryanair_scrap_data)
 
 # if __name__ == "__main__":
 #

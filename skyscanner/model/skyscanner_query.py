@@ -10,7 +10,6 @@ class SkyscannerQuery:
         self.last_day = last_day
         self.filter_mode = filter_mode
         self.trip_list = list()
-        self.filter_mode = filter_mode
         self.timestamp = time.time()
 
     @property

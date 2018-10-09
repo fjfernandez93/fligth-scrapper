@@ -5,7 +5,7 @@ from time import sleep
 from pymongo import MongoClient
 import time
 from model.scrapping_model import SkyscannerScrapData
-
+from common.flags import GlobalState
 
 class SkyscannerScrapper:
 
@@ -74,9 +74,9 @@ class SkyscannerScrapper:
                 if len(descendants) == 2:
                     price = int((descendants[1].text[0:-2]).replace(".",""))
                     prices.append(price)
-                # If price is not available, set it to -1
+                # If price is not available, set it to 0
                 else:
-                    prices.append(-1)
+                    prices.append(0.0)
 
         # --- STORE INFO ---
 
@@ -84,7 +84,12 @@ class SkyscannerScrapper:
             self.store_info_journey(skyscanner_scrap_data, prices[i - 1], i)
 
         driver.close()
+        GlobalState.finished_scrapper()
 
+    def start_scrapping(self, skyscanner_scrap_data):
+        while not GlobalState.can_start_scrapper():
+            sleep(1)
+        self.scrap_skyscanner(skyscanner_scrap_data)
 
     # if __name__ == "__main__":
     #

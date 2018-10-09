@@ -40,11 +40,11 @@
                             <div class="form-row">
                                     <div class="form-group col-md-3">
                                         <label for="first-day">From:</label>
-                                        <input class="form-control" type="date" name="first-day" id="first-day" value="2018-12-01">
+                                        <input class="form-control" type="date" name="first-day" id="first-day" value="2019-01-01">
                                     </div>
                                     <div class="form-group col-md-3">
                                         <label for="last-day">To:</label>
-                                        <input class="form-control" type="date" name="last-day" id="last-day" value="2018-12-30">
+                                        <input class="form-control" type="date" name="last-day" id="last-day" value="2019-01-31">
                                     </div>
                                     <div class="form-group col-md-3">
                                         <label for="num-days">Days:</label>
@@ -74,8 +74,10 @@
                         <thead>
                             <th>Outward trip</th>
                             <th>Outward day</th>
+                            <th>Website</th>
                             <th>Return trip</th>
                             <th>Return day</th>
+                            <th>Website</th>
                             <th>Price</th>
                         </thead>
                         <tbody>
@@ -142,8 +144,10 @@
             columns: [
                 { data: 'trip1' },
                 { data: 'day1' },
+                { data: 'site1'},
                 { data: 'trip2' },
                 { data: 'day2' },
+                { data: 'site2'},
                 { data: 'price' }
             ]
         });
@@ -173,7 +177,7 @@
     function formatData(data)
     {
         for(var i=0; i<data.length; i++){
-            console.log(i)
+            //console.log(i)
 
             //airports1 = data[i]['trip1'].match(/\('\w{3}', '\w{3}'\)/ig)
             airports1 = data[i]['trip1'].match(/\w{3}/ig)
@@ -186,7 +190,10 @@
             data[i]['trip1'] = airport_1a_fil + " > " + airport_1b_fil
             data[i]['trip2'] = airport_2a_fil + " > " + airport_2b_fil
 
-            console.log(data[i])
+            img1 = `<img src="./img/${data[i]['site1']}.png" width="30" height="30" class="d-inline-block align-top" alt="${data[i]['site1']}">`
+            img2 = `<img src="./img/${data[i]['site2']}.png" width="30" height="30" class="d-inline-block align-top" alt="${data[i]['site2']}">`
+            data[i]['site1'] = img1
+            data[i]['site2'] = img2
             
         }
     }
@@ -204,7 +211,7 @@
                 contentType: "application/json; charset=utf-8",
                 data : JSON.stringify($("#skyForm").serializeObject()), // post data || get data
                 success : function(result) {
-                    console.log(result);
+                    //console.log(result);
                     formatData(result)
 
                     table = $("#combinationsTable").DataTable();
