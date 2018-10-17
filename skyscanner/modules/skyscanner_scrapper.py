@@ -6,50 +6,19 @@ from pymongo import MongoClient
 import time
 from model.scrapping_model import SkyscannerScrapData
 from common.flags import GlobalState
+from modules.scrapper import Scrapper
 
-class SkyscannerScrapper:
+
+class SkyscannerScrapper(Scrapper):
 
     def __init__(self):
+        super().__init__("sky_scanner")
         self.url_base = "https://www.skyscanner.es/transporte/vuelos/{}/{}/?adults={}&children=0&a\
                         dultsv2={}&childrenv2&infants=0&cabinclass=economy&rtn=0&preferdirects=false\
                         &outboundaltsenabled=false&inboundaltsenabled=false&oym={}&ref=home&selectedoday=01"
 
-    def store_info_journey(self, skyscanner_scrap_data, price, day):
-        """
-        Store in mongoDB the information about trip day
-        :param skyscanner_scrap_data: The object containing information about the query
-        :param price: the price of the day
-        :param day: the number of the day
-        :return: None
-        """
-        client = MongoClient()
-        collection = client.skyscanner.journey
-        data = {
-            "ori" : skyscanner_scrap_data.ori,
-            "dest" : skyscanner_scrap_data.dest,
-            "month" : skyscanner_scrap_data.month,
-            "year" : skyscanner_scrap_data.year,
-            "day": day,
-            "price": price,
-            "queryDate": time.time(),
-            "site": 'sky_scanner'
-        }
-        id = collection.insert_one(data).inserted_id
-        client.close()
 
-    def scrap_skyscanner(self, skyscanner_scrap_data):
-        """
-        Scrap the prices of a given month in Sky Scanner, and store them
-        in database.
-
-        :param airport1: Origin airport
-        :param airport2: Destination airport
-        :param num_adults: nº of adults
-        :param year: date -> year
-        :param month: date -> month
-        :return:
-        """
-
+    def do_scrapping(self, skyscanner_scrap_data):
         # --- OBTAIN HTML DATA ---
 
         url_for = self.url_base.format(skyscanner_scrap_data.ori, skyscanner_scrap_data.dest,
@@ -81,15 +50,11 @@ class SkyscannerScrapper:
         # --- STORE INFO ---
 
         for i in range(1, len(prices)+1):
-            self.store_info_journey(skyscanner_scrap_data, prices[i - 1], i)
+            self.store_info_journey(skyscanner_scrap_data, i, prices[i - 1])
 
         driver.close()
         GlobalState.finished_scrapper()
 
-    def start_scrapping(self, skyscanner_scrap_data):
-        while not GlobalState.can_start_scrapper():
-            sleep(1)
-        self.scrap_skyscanner(skyscanner_scrap_data)
 
     # if __name__ == "__main__":
     #

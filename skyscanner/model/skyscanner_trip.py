@@ -16,7 +16,7 @@ class SkyscannerTrip:
 
     @property
     def total_price(self):
-        return self.ori_price + self.dest_price
+        return round(self.ori_price + self.dest_price, 2)
 
     def set_price(self):
         dao = model.skyscanner_dao.SkyscannerDAO()

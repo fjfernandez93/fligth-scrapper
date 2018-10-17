@@ -6,39 +6,20 @@ from selenium.webdriver.common.by import By
 from bs4 import BeautifulSoup
 import re
 from time import sleep
-import sys
-from pymongo import MongoClient
-import time
 import datetime
-from model.scrapping_model import RyanairScrapData
+
 import common.tools
 from common.flags import GlobalState
+from modules.scrapper import Scrapper
 
 
-class RyanairScrapper:
+class RyanairScrapper(Scrapper):
 
     def __init__(self):
-
+        super().__init__("ryanair")
         self.url_base = "https://www.ryanair.com/es/es/booking/home/{}/{}/{}//{}/0/0/0"
         self.result = dict()
         self.months = ["Ene.", "Feb.", "Mar.", "Abr.", "May.", "Jun.", "Jul.", "Ago.", "Sep.", "Oct.", "Nov.", "Dic."]
-
-    def store_info_journey(self, ryanair_scrap_data, date, price):
-
-        client = MongoClient()
-        collection = client.skyscanner.journey
-        data = {
-            "ori": ryanair_scrap_data.ori,
-            "dest": ryanair_scrap_data.dest,
-            "month": date.month,
-            "year": date.year,
-            "day": date.day,
-            "price": price,
-            "queryDate": time.time(),
-            "site": 'ryanair'
-        }
-        collection.insert_one(data).inserted_id
-        client.close()
 
     def parse_date(self, date, year):
         """
@@ -90,11 +71,6 @@ class RyanairScrapper:
                 continue
 
     def do_scrapping(self, ryanair_scrap_data):
-        """
-        Main method called to start the scrapping process.
-        :param ryanair_scrap_data: RyanairScrapData with the query info.
-        :return: None
-        """
 
         # Format the url with the data received.
         url_for = self.url_base.format(ryanair_scrap_data.ori.upper(), ryanair_scrap_data.dest.upper(),
@@ -116,17 +92,12 @@ class RyanairScrapper:
 
         # Store the results after order them
         for k in sorted(self.result.keys()):
-            self.store_info_journey(ryanair_scrap_data, k, self.result[k])
+            self.store_info_journey(ryanair_scrap_data, k.day, self.result[k])
 
         # Close the browser
         driver.close()
         self.result.clear()
         GlobalState.finished_scrapper()
-
-    def start_scrapping(self, ryanair_scrap_data):
-        while not GlobalState.can_start_scrapper():
-            sleep(1)
-        self.do_scrapping(ryanair_scrap_data)
 
 # if __name__ == "__main__":
 #

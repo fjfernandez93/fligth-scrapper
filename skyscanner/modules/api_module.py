@@ -61,7 +61,7 @@ def search_data(ss_query):
         print("No data found!!")
         dao.insert_query_data(ss_query)
         # TODO: get from config
-        sites = ["ryanair"]
+        sites = ["ryanair", "skyscanner"]
         for site in sites:
             scrap_combination_in_site(site, ss_query.ori, ss_query.dest, ss_query.first_day.year, ss_query.first_day.month)
         output.append({
