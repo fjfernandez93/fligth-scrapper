@@ -2,11 +2,8 @@ from selenium import webdriver
 from bs4 import BeautifulSoup
 import re
 from time import sleep
-from pymongo import MongoClient
-import time
-from model.scrapping_model import SkyscannerScrapData
 from common.flags import GlobalState
-from modules.scrapper import Scrapper
+from modules.scrappers.scrapper import Scrapper
 
 
 class SkyscannerScrapper(Scrapper):

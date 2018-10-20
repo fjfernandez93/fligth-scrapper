@@ -3,7 +3,7 @@ import calendar
 
 class SkyscannerScrapData:
 
-    def __init__(self,ori, dest, adults, year, month):
+    def __init__(self, ori, dest, adults, year, month):
         self.ori = ori
         self.dest = dest
         self.adults = adults
@@ -15,6 +15,18 @@ class SkyscannerScrapData:
         self.date = year_aux + month_aux
 
 
+class NorwegianScrapData:
+
+    def __init__(self, ori, dest, adults, year, month):
+        self.ori = ori
+        self.dest = dest
+        self.adults = adults
+        self.year = year
+        self.month = month
+
+        self.date = "{}{}".format(year, month)
+
+
 class RyanairScrapData:
 
     def __init__(self, ori, dest, adults, year, month):
@@ -23,5 +35,6 @@ class RyanairScrapData:
         self.adults = adults
         self.year = year
         self.month = month
+
         day = calendar.monthrange(2018, self.month)[1]
         self.date = "{}-{}-{}".format(year, month, day)

@@ -10,7 +10,7 @@ import datetime
 
 import common.tools
 from common.flags import GlobalState
-from modules.scrapper import Scrapper
+from modules.scrappers.scrapper import Scrapper
 
 
 class RyanairScrapper(Scrapper):

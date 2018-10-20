@@ -1,23 +1,25 @@
-from modules.ryanair_scrapper import RyanairScrapper
-from modules.skyscanner_scrapper import SkyscannerScrapper
+from modules.scrappers.ryanair_scrapper import RyanairScrapper
+from modules.scrappers.skyscanner_scrapper import SkyscannerScrapper
+from modules.scrappers.norwegian_scrapper import NorwegianScrapper
 import modules.combinations_module
 import threading
 from model.skyscanner_dao import SkyscannerDAO
-from model.scrapping_model import RyanairScrapData, SkyscannerScrapData
+from model.scrapping_model import RyanairScrapData, SkyscannerScrapData, NorwegianScrapData
 
 
 def scrap_trip_in_site(site, ori, dest, year, month):
 
-    process = None
     if site == 'ryanair':
         obj = RyanairScrapData(ori, dest, 2, year, month)
         scrp = RyanairScrapper()
-        process = threading.Thread(target=scrp.start_scrapping, args=(obj,))
     elif site == 'skyscanner':
         obj = SkyscannerScrapData(ori, dest, 2, year, month)
         scrp = SkyscannerScrapper()
-        process = threading.Thread(target=scrp.start_scrapping, args=(obj,))
+    elif site == 'norwegian':
+        obj = NorwegianScrapData(ori, dest, 2, year, month)
+        scrp = NorwegianScrapper()
 
+    process = threading.Thread(target=scrp.start_scrapping, args=(obj,))
     if process is not None:
         process.start()
     else:
@@ -61,7 +63,7 @@ def search_data(ss_query):
         print("No data found!!")
         dao.insert_query_data(ss_query)
         # TODO: get from config
-        sites = ["ryanair", "skyscanner"]
+        sites = ["norwegian", "ryanair", "skyscanner"]
         for site in sites:
             scrap_combination_in_site(site, ss_query.ori, ss_query.dest, ss_query.first_day.year, ss_query.first_day.month)
         output.append({
